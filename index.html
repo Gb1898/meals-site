@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Meals</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: Arial;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 { font-size: 50px; margin-bottom: 20px; }
+    h2 { font-size: 30px; margin: 10px; }
+  </style>
+</head>
+<body>
+
+<h1 id="month"></h1>
+
+<h2 id="todayBreakfast"></h2>
+<h2 id="tomorrowBreakfast"></h2>
+
+<h2 id="todayLunch"></h2>
+<h2 id="tomorrowLunch"></h2>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBcHWGBSNu9LJUHhbahQqKDpNZYSufza90",
+  authDomain: "les-live.firebaseapp.com",
+  databaseURL: "https://les-live-default-rtdb.firebaseio.com",
+  projectId: "les-live",
+  appId: "1:76711441074:web:7ab3de7e6e0b905ed94fab"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const today = new Date();
+const tomorrow = new Date();
+tomorrow.setDate(today.getDate() + 1);
+
+function key(d) {
+  return d.toISOString().split("T")[0];
+}
+
+onValue(ref(db, "sites/meals"), (snap) => {
+  const data = snap.val() || {};
+
+  document.getElementById("month").textContent = data.monthLabel || "";
+
+  const menu = data.menu || {};
+
+  const t = menu[key(today)] || {};
+  const tm = menu[key(tomorrow)] || {};
+
+  document.getElementById("todayBreakfast").textContent =
+    "Today's Breakfast: " + (t.breakfast || "N/A");
+
+  document.getElementById("tomorrowBreakfast").textContent =
+    "Tomorrow's Breakfast: " + (tm.breakfast || "N/A");
+
+  document.getElementById("todayLunch").textContent =
+    "Today's Lunch: " + (t.lunch || "N/A");
+
+  document.getElementById("tomorrowLunch").textContent =
+    "Tomorrow's Lunch: " + (tm.lunch || "N/A");
+});
+</script>
+
+</body>
+</html>
