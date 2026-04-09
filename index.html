@@ -23,23 +23,24 @@
 
     .wrap {
       width: 100%;
-      max-width: 1700px;
-      padding: 40px 70px;
+      max-width: 1500px;
+      padding: 10px 40px;
       box-sizing: border-box;
       text-align: center;
     }
 
     .month {
-      font-size: 64px;
+      font-size: 60px;
       font-weight: 700;
-      margin-bottom: 70px;
+      margin-bottom: 55px;
+      line-height: 1.1;
     }
 
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      column-gap: 120px;
-      row-gap: 55px;
+      column-gap: 90px;
+      row-gap: 42px;
       align-items: start;
     }
 
@@ -48,43 +49,52 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      min-height: 150px;
+      min-height: 130px;
     }
 
     .label {
-      font-size: 38px;
+      font-size: 34px;
       font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 26px;
+      margin-bottom: 18px;
+      line-height: 1.15;
     }
 
     .value {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 600;
-      line-height: 1.35;
-      max-width: 90%;
-      word-wrap: break-word;
+      line-height: 1.28;
+      max-width: 92%;
+      word-break: break-word;
     }
 
     @media (max-width: 1400px) {
       .month { font-size: 52px; }
-      .label { font-size: 32px; }
-      .value { font-size: 24px; }
+      .label { font-size: 30px; }
+      .value { font-size: 22px; }
     }
 
     @media (max-width: 1000px) {
       .wrap {
-        padding: 30px 30px;
+        padding: 20px;
       }
 
       .grid {
         grid-template-columns: 1fr;
-        row-gap: 35px;
+        row-gap: 28px;
       }
 
-      .month { font-size: 42px; margin-bottom: 40px; }
-      .label { font-size: 28px; }
-      .value { font-size: 22px; }
+      .month {
+        font-size: 42px;
+        margin-bottom: 35px;
+      }
+
+      .label {
+        font-size: 28px;
+      }
+
+      .value {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
