@@ -1,82 +1,165 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Meals</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background: black;
-      color: white;
-      font-family: Arial;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    body {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
+      justify-content: center;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1700px;
+      padding: 40px 70px;
+      box-sizing: border-box;
       text-align: center;
     }
 
-    h1 { font-size: 50px; margin-bottom: 20px; }
-    h2 { font-size: 30px; margin: 10px; }
+    .month {
+      font-size: 64px;
+      font-weight: 700;
+      margin-bottom: 70px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 120px;
+      row-gap: 55px;
+      align-items: start;
+    }
+
+    .block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 150px;
+    }
+
+    .label {
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 26px;
+    }
+
+    .value {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.35;
+      max-width: 90%;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 1400px) {
+      .month { font-size: 52px; }
+      .label { font-size: 32px; }
+      .value { font-size: 24px; }
+    }
+
+    @media (max-width: 1000px) {
+      .wrap {
+        padding: 30px 30px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        row-gap: 35px;
+      }
+
+      .month { font-size: 42px; margin-bottom: 40px; }
+      .label { font-size: 28px; }
+      .value { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
 
-<h1 id="month"></h1>
+  <div class="wrap">
+    <div class="month" id="month">Month</div>
 
-<h2 id="todayBreakfast"></h2>
-<h2 id="tomorrowBreakfast"></h2>
+    <div class="grid">
+      <div class="block">
+        <div class="label">Today's Breakfast</div>
+        <div class="value" id="todayBreakfast">N/A</div>
+      </div>
 
-<h2 id="todayLunch"></h2>
-<h2 id="tomorrowLunch"></h2>
+      <div class="block">
+        <div class="label">Tomorrow's Breakfast</div>
+        <div class="value" id="tomorrowBreakfast">N/A</div>
+      </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+      <div class="block">
+        <div class="label">Today's Lunch</div>
+        <div class="value" id="todayLunch">N/A</div>
+      </div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBcHWGBSNu9LJUHhbahQqKDpNZYSufza90",
-  authDomain: "les-live.firebaseapp.com",
-  databaseURL: "https://les-live-default-rtdb.firebaseio.com",
-  projectId: "les-live",
-  appId: "1:76711441074:web:7ab3de7e6e0b905ed94fab"
-};
+      <div class="block">
+        <div class="label">Tomorrow's Lunch</div>
+        <div class="value" id="tomorrowLunch">N/A</div>
+      </div>
+    </div>
+  </div>
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
 
-const today = new Date();
-const tomorrow = new Date();
-tomorrow.setDate(today.getDate() + 1);
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcHWGBSNu9LJUHhbahQqKDpNZYSufza90",
+      authDomain: "les-live.firebaseapp.com",
+      databaseURL: "https://les-live-default-rtdb.firebaseio.com",
+      projectId: "les-live",
+      appId: "1:76711441074:web:7ab3de7e6e0b905ed94fab"
+    };
 
-function key(d) {
-  return d.toISOString().split("T")[0];
-}
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getDatabase(firebaseApp);
 
-onValue(ref(db, "sites/meals"), (snap) => {
-  const data = snap.val() || {};
+    function localKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
 
-  document.getElementById("month").textContent = data.monthLabel || "";
+    function displayValue(value) {
+      return value && String(value).trim() ? value : "N/A";
+    }
 
-  const menu = data.menu || {};
+    onValue(ref(db, "sites/meals"), (snap) => {
+      const data = snap.val() || {};
+      const menu = data.menu || {};
 
-  const t = menu[key(today)] || {};
-  const tm = menu[key(tomorrow)] || {};
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
 
-  document.getElementById("todayBreakfast").textContent =
-    "Today's Breakfast: " + (t.breakfast || "N/A");
+      const todayData = menu[localKey(today)] || {};
+      const tomorrowData = menu[localKey(tomorrow)] || {};
 
-  document.getElementById("tomorrowBreakfast").textContent =
-    "Tomorrow's Breakfast: " + (tm.breakfast || "N/A");
-
-  document.getElementById("todayLunch").textContent =
-    "Today's Lunch: " + (t.lunch || "N/A");
-
-  document.getElementById("tomorrowLunch").textContent =
-    "Tomorrow's Lunch: " + (tm.lunch || "N/A");
-});
-</script>
+      document.getElementById("month").textContent = data.monthLabel || "";
+      document.getElementById("todayBreakfast").textContent = displayValue(todayData.breakfast);
+      document.getElementById("tomorrowBreakfast").textContent = displayValue(tomorrowData.breakfast);
+      document.getElementById("todayLunch").textContent = displayValue(todayData.lunch);
+      document.getElementById("tomorrowLunch").textContent = displayValue(tomorrowData.lunch);
+    });
+  </script>
 
 </body>
 </html>
