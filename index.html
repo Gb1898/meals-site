@@ -1,175 +1,58 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Meals</title>
-  <style>
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
-
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .wrap {
-      width: 100%;
-      max-width: 1500px;
-      padding: 10px 40px;
-      box-sizing: border-box;
-      text-align: center;
-    }
-
-    .month {
-      font-size: 60px;
-      font-weight: 700;
-      margin-bottom: 55px;
-      line-height: 1.1;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: 90px;
-      row-gap: 42px;
-      align-items: start;
-    }
-
-    .block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 130px;
-    }
-
-    .label {
-      font-size: 40px;
-      font-weight: 700;
-      margin-bottom: 18px;
-      line-height: 1.15;
-    }
-
-    .value {
-      font-size: 34px;
-      font-weight: 600;
-      line-height: 1.28;
-      max-width: 92%;
-      word-break: break-word;
-    }
-
-    @media (max-width: 1400px) {
-      .month { font-size: 52px; }
-      .label { font-size: 30px; }
-      .value { font-size: 22px; }
-    }
-
-    @media (max-width: 1000px) {
-      .wrap {
-        padding: 20px;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-        row-gap: 28px;
-      }
-
-      .month {
-        font-size: 42px;
-        margin-bottom: 35px;
-      }
-
-      .label {
-        font-size: 28px;
-      }
-
-      .value {
-        font-size: 20px;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LES | Breakfast & Lunch Menu</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#fff;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;background:transparent;overflow:hidden}
+body{display:flex;align-items:center;justify-content:center}
+.dashboard{width:100%;height:100%;padding:clamp(8px,1.2vw,24px);display:flex;flex-direction:column;gap:clamp(9px,1.1vw,20px)}
+.header{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:clamp(12px,1.3vw,24px) clamp(16px,1.8vw,34px);border:2px solid rgba(199,151,226,.6);border-radius:15px;background:linear-gradient(135deg,rgba(33,14,49,.96),rgba(57,27,74,.94));box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.header-title{font-size:clamp(24px,3vw,56px);font-weight:700;line-height:1.1}
+.header-subtitle{font-size:clamp(14px,1.4vw,24px);color:#e6d8ed;margin-top:6px}
+.month{font-size:clamp(18px,2.2vw,38px);font-weight:700;white-space:nowrap;color:#f1ddff;text-align:right}
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:clamp(9px,1.1vw,20px)}
+.tile{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:stretch;padding:clamp(12px,1.7vw,30px);border:2px solid rgba(199,151,226,.6);border-radius:15px;background:linear-gradient(135deg,rgba(33,14,49,.96),rgba(57,27,74,.94));box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.tile-head{display:flex;align-items:center;gap:clamp(8px,1vw,18px);padding-bottom:clamp(8px,.8vw,16px);border-bottom:1px solid rgba(255,255,255,.24)}
+.icon{width:clamp(25px,2.7vw,48px);height:clamp(25px,2.7vw,48px);flex:0 0 auto;stroke:#ead7f6;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.label{font-size:clamp(18px,2.1vw,38px);font-weight:700;line-height:1.16}
+.day-date{font-size:clamp(12px,1.1vw,20px);color:#d8c4e5;margin-top:4px}
+.value-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;padding:10px 2px}
+.value{font-size:clamp(18px,2.4vw,43px);font-weight:600;line-height:1.3;text-align:center;overflow-wrap:anywhere;white-space:pre-line}
+.value.missing{color:#cbbbd5;font-weight:400}
+@media(max-width:800px){.dashboard{gap:8px;padding:7px}.header{padding:10px 12px}.header-title{font-size:clamp(17px,3.5vw,27px)}.header-subtitle{font-size:12px}.month{font-size:clamp(14px,2.6vw,22px)}.tile{padding:10px}.label{font-size:clamp(14px,2.7vw,22px)}.value{font-size:clamp(14px,2.8vw,23px)}.icon{width:25px;height:25px}}
+@media(max-width:540px){.grid{grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(0,1fr))}.tile-head{padding-bottom:5px}.tile{padding:7px 10px}.value-wrap{padding:3px}.header-subtitle{display:none}.day-date{display:none}.value{font-size:clamp(13px,3.2vw,18px)}}
+</style>
 </head>
 <body>
-
-  <div class="wrap">
-    <div class="month" id="month">Month</div>
-
-    <div class="grid">
-      <div class="block">
-        <div class="label">Today's Breakfast</div>
-        <div class="value" id="todayBreakfast">N/A</div>
-      </div>
-
-      <div class="block">
-        <div class="label">Tomorrow's Breakfast</div>
-        <div class="value" id="tomorrowBreakfast">N/A</div>
-      </div>
-
-      <div class="block">
-        <div class="label">Today's Lunch</div>
-        <div class="value" id="todayLunch">N/A</div>
-      </div>
-
-      <div class="block">
-        <div class="label">Tomorrow's Lunch</div>
-        <div class="value" id="tomorrowLunch">N/A</div>
-      </div>
-    </div>
+<main class="dashboard">
+  <header class="header">
+    <div><div class="header-title">School Meals</div><div class="header-subtitle">Breakfast &amp; Lunch Menu</div></div>
+    <div class="month" id="month">Loading menu…</div>
+  </header>
+  <div class="grid">
+    <section class="tile"><div class="tile-head"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16M6 11a6 6 0 0 1 12 0M12 3v2M4.9 5l1.4 1.4M19.1 5l-1.4 1.4M3 16h18M5 20h14"/></svg><div><div class="label">Today's Breakfast</div><div class="day-date" id="todayDate1"></div></div></div><div class="value-wrap"><div class="value" id="todayBreakfast">Loading…</div></div></section>
+    <section class="tile"><div class="tile-head"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16M6 11a6 6 0 0 1 12 0M12 3v2M4.9 5l1.4 1.4M19.1 5l-1.4 1.4M3 16h18M5 20h14"/></svg><div><div class="label">Tomorrow's Breakfast</div><div class="day-date" id="tomorrowDate1"></div></div></div><div class="value-wrap"><div class="value" id="tomorrowBreakfast">Loading…</div></div></section>
+    <section class="tile"><div class="tile-head"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M16 3v18M20 3v9h-4V3"/></svg><div><div class="label">Today's Lunch</div><div class="day-date" id="todayDate2"></div></div></div><div class="value-wrap"><div class="value" id="todayLunch">Loading…</div></div></section>
+    <section class="tile"><div class="tile-head"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M16 3v18M20 3v9h-4V3"/></svg><div><div class="label">Tomorrow's Lunch</div><div class="day-date" id="tomorrowDate2"></div></div></div><div class="value-wrap"><div class="value" id="tomorrowLunch">Loading…</div></div></section>
   </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBcHWGBSNu9LJUHhbahQqKDpNZYSufza90",
-      authDomain: "les-live.firebaseapp.com",
-      databaseURL: "https://les-live-default-rtdb.firebaseio.com",
-      projectId: "les-live",
-      appId: "1:76711441074:web:7ab3de7e6e0b905ed94fab"
-    };
-
-    const firebaseApp = initializeApp(firebaseConfig);
-    const db = getDatabase(firebaseApp);
-
-    function localKey(date) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, "0");
-      const d = String(date.getDate()).padStart(2, "0");
-      return `${y}-${m}-${d}`;
-    }
-
-    function displayValue(value) {
-      return value && String(value).trim() ? value : "N/A";
-    }
-
-    onValue(ref(db, "sites/meals"), (snap) => {
-      const data = snap.val() || {};
-      const menu = data.menu || {};
-
-      const today = new Date();
-      const tomorrow = new Date();
-      tomorrow.setDate(today.getDate() + 1);
-
-      const todayData = menu[localKey(today)] || {};
-      const tomorrowData = menu[localKey(tomorrow)] || {};
-
-      document.getElementById("month").textContent = data.monthLabel || "";
-      document.getElementById("todayBreakfast").textContent = displayValue(todayData.breakfast);
-      document.getElementById("tomorrowBreakfast").textContent = displayValue(tomorrowData.breakfast);
-      document.getElementById("todayLunch").textContent = displayValue(todayData.lunch);
-      document.getElementById("tomorrowLunch").textContent = displayValue(tomorrowData.lunch);
-    });
-  </script>
-
+</main>
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js';
+import {getDatabase,ref,onValue} from 'https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js';
+const firebaseConfig={apiKey:'AIzaSyBcHWGBSNu9LJUHhbahQqKDpNZYSufza90',authDomain:'les-live.firebaseapp.com',databaseURL:'https://les-live-default-rtdb.firebaseio.com',projectId:'les-live',appId:'1:76711441074:web:7ab3de7e6e0b905ed94fab'};
+const ZONE='America/New_York';
+let meals=null;
+const $=id=>document.getElementById(id);
+function schoolDate(){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:ZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return new Date(Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day),12));}
+function key(date){return date.toISOString().slice(0,10)}
+function show(id,value){const el=$(id);const present=value!==null&&value!==undefined&&String(value).trim()!=='';el.textContent=present?String(value):'N/A';el.classList.toggle('missing',!present)}
+function render(){if(meals===null)return;const today=schoolDate(),tomorrow=new Date(today.getTime()+86400000);const menu=meals.menu||{};const t=menu[key(today)]||{},n=menu[key(tomorrow)]||{};const dateFmt=new Intl.DateTimeFormat('en-US',{timeZone:'UTC',weekday:'long',month:'short',day:'numeric'});$('todayDate1').textContent=$('todayDate2').textContent=dateFmt.format(today);$('tomorrowDate1').textContent=$('tomorrowDate2').textContent=dateFmt.format(tomorrow);$('month').textContent=meals.monthLabel||new Intl.DateTimeFormat('en-US',{timeZone:'UTC',month:'long',year:'numeric'}).format(today);show('todayBreakfast',t.breakfast);show('tomorrowBreakfast',n.breakfast);show('todayLunch',t.lunch);show('tomorrowLunch',n.lunch)}
+try{const app=initializeApp(firebaseConfig);onValue(ref(getDatabase(app),'sites/meals'),snap=>{meals=snap.val()||{};render()},err=>{console.warn('Meals unavailable',err);$('month').textContent='Menu unavailable';['todayBreakfast','tomorrowBreakfast','todayLunch','tomorrowLunch'].forEach(id=>show(id,'Unable to load menu'))})}catch(err){console.warn(err);$('month').textContent='Menu unavailable'}
+setInterval(render,60000);
+</script>
 </body>
 </html>
